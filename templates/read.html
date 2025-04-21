@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Reading: {{ book.title }} - BookVerse{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>{{ book.title }}</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('view_book', book_id=book.id) }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Book Details
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                {% if pdf_path %}
+                    <div class="ratio ratio-16x9" style="min-height: 600px;">
+                        <iframe src="{{ pdf_path }}" frameborder="0" width="100%" height="100%"></iframe>
+                    </div>
+                {% else %}
+                    <div class="text-center p-5">
+                        <div class="display-6 text-muted">
+                            <i class="fas fa-exclamation-circle mb-3 d-block"></i>
+                            PDF not available
+                        </div>
+                        <p class="lead">The PDF for this book is not available.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

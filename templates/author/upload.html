@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Book - BookVerse{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Upload a New Book</h1>
+        <p class="lead">Share your work with readers around the world</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('author_dashboard') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('upload_book') }}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Book Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+                        <div class="form-text">Provide a compelling description of your book to attract readers.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="amazon_link" class="form-label">Amazon Link (Optional)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fab fa-amazon"></i></span>
+                            <input type="text" class="form-control" id="amazon_link" name="amazon_link" placeholder="https://amazon.com/your-book">
+                        </div>
+                        <div class="form-text">If your book is available on Amazon, add the link here.</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="pdf_file" class="form-label">PDF File <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" id="pdf_file" name="pdf_file" accept=".pdf" required>
+                        <div class="form-text">Upload your book in PDF format (max 16MB).</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-upload me-2"></i>Upload Book
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Publishing Guidelines</h5>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li class="mb-2">Ensure you have the rights to publish the content</li>
+                    <li class="mb-2">PDF files must be properly formatted for reading</li>
+                    <li class="mb-2">Cover images should be included in the PDF</li>
+                    <li class="mb-2">Maximum file size is 16MB</li>
+                    <li class="mb-2">Provide an accurate and detailed description</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Need Help?</h5>
+            </div>
+            <div class="card-body">
+                <p>If you need assistance with the book upload process, check out our <a href="#">Publishing Guide</a> or <a href="#">contact support</a>.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

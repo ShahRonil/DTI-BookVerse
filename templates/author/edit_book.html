@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Book - BookVerse{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Edit Book</h1>
+        <p class="lead">Update details for "{{ book.title }}"</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('author_dashboard') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('edit_book', book_id=book.id) }}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Book Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ book.title }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="description" name="description" rows="5" required>{{ book.description }}</textarea>
+                        <div class="form-text">Provide a compelling description of your book to attract readers.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="amazon_link" class="form-label">Amazon Link (Optional)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fab fa-amazon"></i></span>
+                            <input type="text" class="form-control" id="amazon_link" name="amazon_link" value="{{ book.amazon_link or '' }}" placeholder="https://amazon.com/your-book">
+                        </div>
+                        <div class="form-text">If your book is available on Amazon, add the link here.</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="pdf_file" class="form-label">PDF File (Optional)</label>
+                        <input type="file" class="form-control" id="pdf_file" name="pdf_file" accept=".pdf">
+                        <div class="form-text">Upload a new PDF only if you want to replace the existing one (max 16MB).</div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save me-2"></i>Save Changes
+                        </button>
+                        <a href="{{ url_for('author_dashboard') }}" class="btn btn-outline-secondary btn-lg">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Current Information</h5>
+            </div>
+            <div class="card-body">
+                <h5>{{ book.title }}</h5>
+                <p class="text-muted small">Created on {{ book.created_at.strftime('%b %d, %Y') }}</p>
+                <p>{{ book.description|truncate(150) }}</p>
+                
+                {% if book.amazon_link %}
+                <div class="mb-3">
+                    <strong>Amazon Link:</strong>
+                    <a href="{{ book.amazon_link }}" target="_blank" class="d-block text-truncate">
+                        {{ book.amazon_link }}
+                    </a>
+                </div>
+                {% endif %}
+                
+                <div class="mb-0">
+                    <strong>PDF Status:</strong>
+                    {% if book.pdf_data %}
+                        <span class="text-success">Available</span>
+                    {% else %}
+                        <span class="text-danger">Missing</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Danger Zone</h5>
+            </div>
+            <div class="card-body">
+                <p>Once you delete a book, there is no going back. Please be certain.</p>
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <i class="fas fa-trash me-2"></i>Delete Book
+                </button>
+                
+                <!-- Delete Modal -->
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Confirm Deletion</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to delete "{{ book.title }}"? This action cannot be undone.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <form method="POST" action="{{ url_for('delete_book', book_id=book.id) }}">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

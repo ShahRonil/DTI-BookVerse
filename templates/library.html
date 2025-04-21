@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}My Library - BookVerse{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>My Library</h1>
+        <p class="lead">Books you've saved to read and revisit</p>
+    </div>
+    <div class="col-md-4">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search in library..." id="searchInput">
+            <button class="btn btn-primary" type="button" id="searchButton" title="Search library">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="row" id="booksList">
+    {% if books %}
+        {% for book in books %}
+            <div class="col-md-6 col-lg-4 mb-4 book-card">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">{{ book.title }}</h5>
+                            <span class="badge bg-primary">
+                                <i class="fas fa-bookmark me-1"></i> Saved
+                            </span>
+                        </div>
+                        <h6 class="card-subtitle mb-2 text-muted">By {{ book.author }}</h6>
+                        <p class="card-text">{{ book.description|truncate(150) }}</p>
+                        <div class="text-muted small">
+                            <i class="fas fa-calendar-plus me-1"></i> Added on {{ book.added_at.strftime('%b %d, %Y') }}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent d-flex justify-content-between align-items-center">
+                        <a href="{{ url_for('view_book', book_id=book.id) }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-book-open me-1"></i> Read
+                        </a>
+                        <form method="POST" action="{{ url_for('remove_from_library', book_id=book.id) }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Remove from library">
+                                <i class="fas fa-trash me-1"></i> Remove
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12 text-center py-5">
+            <div class="display-6 text-muted">
+                <i class="fas fa-bookmark mb-3 d-block"></i>
+                Your library is empty
+            </div>
+            <p class="lead mb-4">Start adding books to create your personal collection.</p>
+            <a href="{{ url_for('browse') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-search me-2"></i>Browse Books
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const bookCards = document.querySelectorAll('.book-card');
+        
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            bookCards.forEach(card => {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                const author = card.querySelector('.card-subtitle').textContent.toLowerCase();
+                const description = card.querySelector('.card-text').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || author.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+    });
+</script>
+{% endblock %} 

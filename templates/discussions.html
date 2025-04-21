@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Discussions - BookVerse{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Discussions</h1>
+        <p class="lead">Join conversations about your favorite books</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <div class="input-group mb-2">
+            <input type="text" class="form-control" placeholder="Search discussions..." id="searchInput">
+            <button class="btn btn-primary" type="button" id="searchButton">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+        <div class="d-grid">
+            <a href="{{ url_for('browse') }}" class="btn btn-outline-primary">
+                <i class="fas fa-book me-1"></i> Browse Books to Start Discussion
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Discussions -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Recent Discussions</h5>
+    </div>
+    <div class="card-body">
+        {% if discussions %}
+            <div class="list-group">
+                {% for discussion in discussions %}
+                    <a href="{{ url_for('view_discussion', discussion_id=discussion.id) }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ discussion.title }}</h5>
+                            <small>{{ discussion.created_at.strftime('%b %d, %Y') }}</small>
+                        </div>
+                        <p class="mb-1">{{ discussion.content|truncate(150) }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fas fa-book me-1"></i> {{ discussion.book.title }}
+                            </small>
+                            <small class="text-muted">
+                                <i class="fas fa-user me-1"></i> {{ discussion.user.username }}
+                                <i class="fas fa-comment ms-3 me-1"></i> {{ discussion.replies|length }} replies
+                            </small>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <div class="display-6 text-muted">
+                    <i class="fas fa-comments mb-3 d-block"></i>
+                    No discussions yet
+                </div>
+                <p class="lead mb-4">Start a new discussion about a book you've read.</p>
+                <a href="{{ url_for('browse') }}" class="btn btn-primary">
+                    <i class="fas fa-book me-2"></i>Browse Books
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Your Active Discussions -->
+<div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Your Discussions</h5>
+    </div>
+    <div class="card-body">
+        {% if user_discussions %}
+            <div class="list-group">
+                {% for discussion in user_discussions %}
+                    <a href="{{ url_for('view_discussion', discussion_id=discussion.id) }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ discussion.title }}</h5>
+                            <small>{{ discussion.created_at.strftime('%b %d, %Y') }}</small>
+                        </div>
+                        <p class="mb-1">{{ discussion.content|truncate(150) }}</p>
+                        <small class="text-muted">
+                            <i class="fas fa-book me-1"></i> {{ discussion.book.title }}
+                            <i class="fas fa-comment ms-3 me-1"></i> {{ discussion.replies|length }} replies
+                        </small>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-4">
+                <p class="text-muted mb-0">You haven't started any discussions yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const discussionItems = document.querySelectorAll('.list-group-item');
+        
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            discussionItems.forEach(item => {
+                const title = item.querySelector('h5').textContent.toLowerCase();
+                const content = item.querySelector('p').textContent.toLowerCase();
+                const bookTitle = item.querySelector('small:first-of-type').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || content.includes(searchTerm) || bookTitle.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+    });
+</script>
+{% endblock %} 

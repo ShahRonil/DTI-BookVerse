@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ discussion.title }} - BookVerse{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>{{ discussion.title }}</h1>
+        <p class="lead">
+            <a href="{{ url_for('view_book', book_id=discussion.book.id) }}">{{ discussion.book.title }}</a>
+        </p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('book_discussions', book_id=discussion.book.id) }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Discussions
+        </a>
+    </div>
+</div>
+
+<!-- Main Discussion Post -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            <img src="{{ discussion.user.avatar }}" alt="{{ discussion.user.username }}" class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;">
+            <span class="fw-bold">{{ discussion.user.username }}</span>
+        </div>
+        <small class="text-muted">{{ discussion.created_at.strftime('%b %d, %Y at %I:%M %p') }}</small>
+    </div>
+    <div class="card-body">
+        <div class="mb-3">
+            {{ discussion.content|safe }}
+        </div>
+    </div>
+</div>
+
+<!-- Replies -->
+<h4 class="mb-3">Replies <span class="badge bg-secondary">{{ replies|length }}</span></h4>
+
+{% if replies %}
+    {% for reply in replies %}
+        <div class="card shadow-sm mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <img src="{{ reply.user.avatar }}" alt="{{ reply.user.username }}" class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;">
+                    <span class="fw-bold">{{ reply.user.username }}</span>
+                </div>
+                <small class="text-muted">{{ reply.created_at.strftime('%b %d, %Y at %I:%M %p') }}</small>
+            </div>
+            <div class="card-body">
+                <div class="mb-0">
+                    {{ reply.content|safe }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-light text-center">
+        <p class="mb-0">No replies yet. Be the first to comment!</p>
+    </div>
+{% endif %}
+
+<!-- Reply Form -->
+<div class="card shadow-sm mt-4">
+    <div class="card-header">
+        <h5 class="mb-0">Add Your Reply</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('add_reply', discussion_id=discussion.id) }}">
+            <div class="mb-3">
+                <textarea class="form-control" id="content" name="content" rows="4" placeholder="Share your thoughts..." required></textarea>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane me-2"></i>Post Reply
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

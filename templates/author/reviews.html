@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}My Books Reviews{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Reviews for My Books</h1>
+        <a href="{{ url_for('author_dashboard') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+        </a>
+    </div>
+    
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">All Reviews ({{ reviews|length }})</h5>
+        </div>
+        <div class="card-body">
+            {% if reviews %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Book</th>
+                                <th>User</th>
+                                <th>Rating</th>
+                                <th>Comment</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for review in reviews %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('view_book', book_id=review.book_id) }}">{{ review.title }}</a>
+                                    </td>
+                                    <td>{{ review.username }}</td>
+                                    <td>
+                                        <div class="star-rating">
+                                            {% for i in range(5) %}
+                                                {% if i < review.rating %}
+                                                    <i class="fas fa-star text-warning"></i>
+                                                {% else %}
+                                                    <i class="far fa-star text-warning"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if review.comment %}
+                                            {{ review.comment|truncate(50) }}
+                                        {% else %}
+                                            <span class="text-muted">No comment</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ review.created_at.strftime('%b %d, %Y') }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">No reviews found for your books yet.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

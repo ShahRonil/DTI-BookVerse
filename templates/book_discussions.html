@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Discussions: {{ book.title }} - BookVerse{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Discussions: {{ book.title }}</h1>
+        <p class="lead">Join the conversation about this book</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('view_book', book_id=book.id) }}" class="btn btn-outline-primary me-2">
+            <i class="fas fa-arrow-left me-2"></i>Back to Book
+        </a>
+        <a href="{{ url_for('new_discussion', book_id=book.id) }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>New Discussion
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">About this Book</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3 col-lg-2">
+                <div class="text-center mb-3 mb-md-0">
+                    <div class="bg-light rounded p-3 d-inline-block">
+                        <i class="fas fa-book fa-4x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9 col-lg-10">
+                <h4>{{ book.title }}</h4>
+                <p class="text-muted mb-2">By {{ book.author.username }}</p>
+                <p class="mb-0">{{ book.description|truncate(200) }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Discussions -->
+<div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Discussions ({{ discussions|length }})</h5>
+        <a href="{{ url_for('new_discussion', book_id=book.id) }}" class="btn btn-sm btn-primary">
+            <i class="fas fa-plus me-1"></i>New Discussion
+        </a>
+    </div>
+    <div class="card-body">
+        {% if discussions %}
+            <div class="list-group">
+                {% for discussion in discussions %}
+                    <a href="{{ url_for('view_discussion', discussion_id=discussion.id) }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ discussion.title }}</h5>
+                            <small>{{ discussion.created_at.strftime('%b %d, %Y') }}</small>
+                        </div>
+                        <p class="mb-1">{{ discussion.content|truncate(150) }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fas fa-user me-1"></i> Started by {{ discussion.user.username }}
+                            </small>
+                            <small class="text-muted">
+                                <i class="fas fa-comment me-1"></i> {{ discussion.replies|length }} replies
+                            </small>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <div class="display-6 text-muted">
+                    <i class="fas fa-comments mb-3 d-block"></i>
+                    No discussions yet
+                </div>
+                <p class="lead mb-4">Start the conversation about this book!</p>
+                <a href="{{ url_for('new_discussion', book_id=book.id) }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Start New Discussion
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

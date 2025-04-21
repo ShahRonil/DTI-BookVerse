@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin - Manage Discussions{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Manage Discussions</h1>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+        </a>
+    </div>
+    
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">All Discussions ({{ discussions|length }})</h5>
+        </div>
+        <div class="card-body">
+            {% if discussions %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Book</th>
+                                <th>User</th>
+                                <th>Content</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for discussion in discussions %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('view_discussion', discussion_id=discussion.id) }}">{{ discussion.title }}</a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('view_book', book_id=discussion.book_id) }}">{{ discussion.book_title }}</a>
+                                    </td>
+                                    <td>{{ discussion.username }}</td>
+                                    <td>{{ discussion.content|truncate(50) }}</td>
+                                    <td>{{ discussion.created_at.strftime('%b %d, %Y') }}</td>
+                                    <td>
+                                        <form action="{{ url_for('admin_delete_discussion', discussion_id=discussion.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this discussion? This will also delete all replies.');">
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash-alt"></i> Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">No discussions found in the system.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

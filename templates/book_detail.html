@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ book.title }} - BookVerse{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>{{ book.title }}</h1>
+        <p class="lead">By {{ book.author.username }}</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('browse') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Browse
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 col-lg-2 mb-3 mb-md-0">
+                        <div class="bg-light rounded p-3 text-center">
+                            <i class="fas fa-book fa-5x text-primary"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-9 col-lg-10">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h2 class="card-title mb-1">{{ book.title }}</h2>
+                                <p class="text-muted mb-0">By {{ book.author.username }}</p>
+                            </div>
+                            <div>
+                                {% if book.amazon_link %}
+                                <a href="{{ book.amazon_link }}" target="_blank" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fab fa-amazon me-1"></i> View on Amazon
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="star-rating">
+                                {% for i in range(5) %}
+                                    {% if i < avg_rating|int %}
+                                        <i class="fas fa-star filled"></i>
+                                    {% else %}
+                                        <i class="far fa-star empty"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="ms-2 text-muted">{{ reviews|length }} reviews</span>
+                            </div>
+                        </div>
+                        <p class="card-text">{{ book.description }}</p>
+                        <div class="text-muted small mb-3">
+                            <i class="fas fa-calendar-alt me-1"></i> Added on {{ book.created_at.strftime('%b %d, %Y') }}
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="{{ url_for('read_book', book_id=book.id) }}" class="btn btn-primary">
+                                <i class="fas fa-book-open me-2"></i>Read Book
+                            </a>
+                            {% if current_user.is_authenticated and current_user.user_type == 'reader' %}
+                                <form method="POST" action="{{ url_for('add_to_library', book_id=book.id) }}">
+                                    <button type="submit" class="btn btn-outline-primary">
+                                        <i class="fas fa-bookmark me-2"></i>Add to Library
+                                    </button>
+                                </form>
+                            {% endif %}
+                            <a href="{{ url_for('book_reviews', book_id=book.id) }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-star me-2"></i>Reviews <span class="badge bg-secondary">{{ reviews|length }}</span>
+                            </a>
+                            <a href="{{ url_for('book_discussions', book_id=book.id) }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-comments me-2"></i>Discussions <span class="badge bg-secondary">{{ discussions|length }}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Reviews -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Reviews</h5>
+                <a href="{{ url_for('book_reviews', book_id=book.id) }}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if reviews %}
+                    {% for review in reviews[:3] %}
+                        <div class="mb-3 {% if not loop.last %}border-bottom pb-3{% endif %}">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ review.user.avatar }}" alt="{{ review.user.username }}" class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;">
+                                    <span class="fw-bold">{{ review.user.username }}</span>
+                                </div>
+                                <div class="star-rating">
+                                    {% for i in range(5) %}
+                                        {% if i < review.rating %}
+                                            <i class="fas fa-star filled"></i>
+                                        {% else %}
+                                            <i class="far fa-star empty"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <p class="mb-1">{{ review.content }}</p>
+                            <small class="text-muted">{{ review.created_at.strftime('%b %d, %Y') }}</small>
+                        </div>
+                    {% endfor %}
+                    {% if reviews|length > 3 %}
+                        <div class="text-center mt-3">
+                            <a href="{{ url_for('book_reviews', book_id=book.id) }}" class="btn btn-outline-primary btn-sm">
+                                See all {{ reviews|length }} reviews
+                            </a>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-3">
+                        <p class="text-muted mb-0">No reviews yet. Be the first to review!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Recent Discussions -->
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Discussions</h5>
+                <a href="{{ url_for('book_discussions', book_id=book.id) }}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if discussions %}
+                    {% for discussion in discussions[:3] %}
+                        <div class="mb-3 {% if not loop.last %}border-bottom pb-3{% endif %}">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="mb-0">
+                                    <a href="{{ url_for('view_discussion', discussion_id=discussion.id) }}">{{ discussion.title }}</a>
+                                </h6>
+                                <small class="text-muted">{{ discussion.created_at.strftime('%b %d, %Y') }}</small>
+                            </div>
+                            <p class="mb-1">{{ discussion.content|truncate(100) }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-user me-1"></i> {{ discussion.user.username }}
+                                </small>
+                                <small class="text-muted">
+                                    <i class="fas fa-comment me-1"></i> {{ discussion.replies|length }} replies
+                                </small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% if discussions|length > 3 %}
+                        <div class="text-center mt-3">
+                            <a href="{{ url_for('book_discussions', book_id=book.id) }}" class="btn btn-outline-primary btn-sm">
+                                See all {{ discussions|length }} discussions
+                            </a>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-3">
+                        <p class="text-muted mb-0">No discussions yet.</p>
+                        <a href="{{ url_for('new_discussion', book_id=book.id) }}" class="btn btn-outline-primary btn-sm mt-2">
+                            <i class="fas fa-plus me-1"></i>Start a Discussion
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <!-- Author Info -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">About the Author</h5>
+            </div>
+            <div class="card-body text-center">
+                <img src="{{ book.author.avatar }}" alt="{{ book.author.username }}" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                <h5>{{ book.author.username }}</h5>
+                {% if book.author.full_name %}
+                    <p class="text-muted mb-3">{{ book.author.full_name }}</p>
+                {% endif %}
+                <a href="{{ url_for('author_profile', author_id=book.author.id) }}" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-user me-1"></i> View Profile
+                </a>
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('read_book', book_id=book.id) }}" class="btn btn-primary">
+                        <i class="fas fa-book-open me-2"></i>Read Book
+                    </a>
+                    {% if current_user.is_authenticated and current_user.user_type == 'reader' %}
+                        <form method="POST" action="{{ url_for('add_to_library', book_id=book.id) }}">
+                            <button type="submit" class="btn btn-outline-primary d-block w-100">
+                                <i class="fas fa-bookmark me-2"></i>Add to Library
+                            </button>
+                        </form>
+                    {% endif %}
+                    <a href="{{ url_for('book_reviews', book_id=book.id) }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-star me-2"></i>View Reviews
+                    </a>
+                    <a href="{{ url_for('book_discussions', book_id=book.id) }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-comments me-2"></i>Join Discussion
+                    </a>
+                    {% if book.amazon_link %}
+                        <a href="{{ book.amazon_link }}" target="_blank" class="btn btn-outline-dark">
+                            <i class="fab fa-amazon me-2"></i>View on Amazon
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- More by this Author -->
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">More by this Author</h5>
+            </div>
+            <div class="card-body">
+                {% if author_books %}
+                    <div class="list-group">
+                        {% for author_book in author_books %}
+                            {% if author_book.id != book.id %}
+                                <a href="{{ url_for('view_book', book_id=author_book.id) }}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ author_book.title }}</h6>
+                                    </div>
+                                    <p class="mb-1">{{ author_book.description|truncate(80) }}</p>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">No other books by this author.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,221 @@
+/* BookVerse Custom Styles */
+
+/* Card hover effect */
+.card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Badge styling */
+.badge-card {
+    transition: transform 0.2s;
+}
+
+.badge-card:hover {
+    transform: scale(1.05);
+}
+
+/* Custom button styling */
+.btn-icon {
+    padding: 0.25rem 0.5rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+}
+
+/* Reading progress bar */
+.reading-progress {
+    height: 0.5rem;
+    border-radius: 1rem;
+}
+
+/* Custom scrollbar for book content */
+.book-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.book-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.book-content::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.book-content::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Theme transition effect */
+body {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Profile avatar highlight */
+.avatar-highlight {
+    border: 3px solid var(--primary-color);
+    padding: 3px;
+    border-radius: 50%;
+}
+
+/* Book card footer */
+.book-card .card-footer {
+    background-color: transparent;
+    border-top: none;
+}
+
+/* Star rating display */
+.star-rating .filled {
+    color: gold;
+}
+
+.star-rating .empty {
+    color: #ccc;
+}
+
+/* Discussion thread styling */
+.discussion-thread {
+    border-left: 3px solid var(--primary-color);
+    padding-left: 1rem;
+    margin-left: 1rem;
+}
+
+/* Admin dashboard metrics */
+.metric-card {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.metric-icon {
+    font-size: 2.5rem;
+    opacity: 0.2;
+    position: absolute;
+    right: 1rem;
+    bottom: 0.5rem;
+}
+
+/* Author name styling */
+.author-name {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Custom file input styling */
+.custom-file-input::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+.custom-file-input::before {
+    content: 'Select file';
+    display: inline-block;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 3px;
+    padding: 5px 10px;
+    outline: none;
+    white-space: nowrap;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Dark mode specific overrides */
+body.dark-mode {
+    background-color: #1f2937;
+    color: #e5e7eb;
+}
+
+body.dark-mode .card {
+    background-color: #374151;
+    border-color: #4b5563;
+}
+
+body.dark-mode .form-control {
+    background-color: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+}
+
+body.dark-mode .form-control:focus {
+    background-color: #2d3748;
+    color: #e2e8f0;
+}
+
+body.dark-mode .card-header {
+    background-color: #2d3748;
+    border-color: #4b5563;
+}
+
+body.dark-mode .card-footer {
+    background-color: #2d3748;
+    border-color: #4b5563;
+}
+
+body.dark-mode .text-muted {
+    color: #9ca3af !important;
+}
+
+body.dark-mode .btn-outline-primary {
+    color: #818cf8;
+    border-color: #818cf8;
+}
+
+body.dark-mode .btn-outline-primary:hover {
+    background-color: #818cf8;
+    color: #1f2937;
+}
+
+body.dark-mode .btn-outline-secondary {
+    color: #9ca3af;
+    border-color: #9ca3af;
+}
+
+body.dark-mode .btn-outline-secondary:hover {
+    background-color: #9ca3af;
+    color: #1f2937;
+}
+
+body.dark-mode .modal-content {
+    background-color: #374151;
+    color: #e5e7eb;
+}
+
+body.dark-mode .modal-header,
+body.dark-mode .modal-footer {
+    background-color: #2d3748;
+    border-color: #4b5563;
+}
+
+body.dark-mode .table {
+    color: #e5e7eb;
+}
+
+body.dark-mode .list-group-item {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: #e5e7eb;
+}
+
+body.dark-mode .list-group-item-action:hover {
+    background-color: #2d3748;
+    color: #e5e7eb;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hide-mobile {
+        display: none;
+    }
+    
+    .mobile-full-width {
+        width: 100%;
+    }
+} 

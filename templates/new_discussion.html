@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}New Discussion - BookVerse{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>New Discussion</h1>
+        <p class="lead">Start a conversation about "{{ book.title }}"</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('book_discussions', book_id=book.id) }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Discussions
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">About "{{ book.title }}"</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 col-lg-2">
+                        <div class="text-center mb-3 mb-md-0">
+                            <div class="bg-light rounded p-3 d-inline-block">
+                                <i class="fas fa-book fa-3x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9 col-lg-10">
+                        <h5>{{ book.title }}</h5>
+                        <p class="text-muted mb-2">By {{ book.author.username }}</p>
+                        <p class="mb-0">{{ book.description|truncate(150) }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Create Your Discussion</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('create_discussion', book_id=book.id) }}">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Discussion Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                        <div class="form-text">Choose a clear, specific title for your discussion</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Discussion Content <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="content" name="content" rows="6" required></textarea>
+                        <div class="form-text">Share your thoughts, questions, or insights about the book</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus-circle me-2"></i>Create Discussion
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Discussion Guidelines</h5>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li class="mb-2">Be respectful and considerate of other readers</li>
+                    <li class="mb-2">Stay on topic and focus on the book's content</li>
+                    <li class="mb-2">If discussing plot points, consider adding a spoiler warning</li>
+                    <li class="mb-2">Support your opinions with examples from the book</li>
+                    <li class="mb-2">Engage with other readers' perspectives constructively</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
